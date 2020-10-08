@@ -1,3 +1,5 @@
+### Python program to query the meta data of an instance within aws and provide a json formatted output. 
+###
 #!/usr/bin/env python
 
 import requests
