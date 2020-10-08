@@ -51,7 +51,8 @@ if __name__ == '__main__':
     
     
     
-    
+Note: There is a python module (called ec2-metadata 2.2.0) which can be used directly used to fetch the individual fileds of meta-data for a EC2 instance.
+And the module can be imported into any python application and can be installed to any EC2 instance using pip.       
     
     
     
