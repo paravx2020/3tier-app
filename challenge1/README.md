@@ -1,3 +1,15 @@
+# Three Tier Architecture selected here for Demo is:
+- A simple Python Flask Web App 
+- A MySQL Database for backend
+
+I have choosen terraform to create a highly available K8s cluster with 
+- 3 AZs in us-east-2
+- 1 nodes in each zone 
+
+The App & DB were deployed using kubectl manifests.
+A secret is used for storing the DB password but in the real world we use 'vault' for storing the secrets.
+
+
 # Provision an EKS Cluster
 
 After installing the AWS CLI. Configure it to use your credentials.
