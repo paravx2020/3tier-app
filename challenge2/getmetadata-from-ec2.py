@@ -1,3 +1,6 @@
+# This python program will be able to give the json formatted meta-data
+# with in an AWS instance
+
 #!/usr/bin/env python
 
 import requests

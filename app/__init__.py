@@ -1,49 +1,51 @@
 from flask import Flask, render_template, request
-import socket
+import os, socket
 import mysql.connector
 
 app = Flask(__name__)
 
-@app.route('/')
-def hello():
-    # construct HTML output
-    html = "<h3>Hello World from {hostname}!</h3>"
-    html += "<h3>Your random word is: {random_word}</h3>"
-
-    # yes, this is a terrible way to do this, but it works/is simple
-    db = mysql.connector.connect(
+# DB initialization
+db = mysql.connector.connect(
               host=os.getenv("MYSQL_SERVICE_HOST"),
               port=os.getenv("MYSQL_SERVICE_PORT"),
               user="root",
-              passwd=os.getenv("MYSQL_DB_PASSWORD"),
-              database="randomizer",
+              passwd=os.getenv("MYSQL_ROOT_PASSWORD"),
+              database="PARADB",
               auth_plugin="mysql_native_password"
-         )
+)
 
+@app.route('/init')
+def init():
     cursor = db.cursor()
-    cursor.execute("select word from random_words order by rand() limit 1;")
-    res = cursor.fetchall()
+    cursor.execute("DROP DATABASE IF EXISTS PARADB")
+    cursor.execute("CREATE DATABASE PARADB")
+    cursor.execute("USE PARADB")
+    sql = """CREATE TABLE users (
+         fname char(20),
+         lname char(20)
+     )"""
+    cursor.execute(sql)
+    db.commit()
+    return "DB Init done" 
 
-    return html.format(random_word=res[0][0], hostname=socket.gethostname())
+@app.route('/getusers')
+def getusers():
+    cursor = db.cursor()
+    cursor.execute("select * from users;")
+    data = cursor.fetchall()
 
-@app.route('/index', methods=['GET', 'POST'])
-def index():
+    return render_template("example.html", title='User Data', value=data)
+
+@app.route('/addusers', methods=['GET', 'POST'])
+def addusers():
     if request.method == "POST":
         details = request.form
         firstName = details['fname']
         lastName = details['lname']
 
-        db = mysql.connector.connect(
-              host=os.getenv("MYSQL_SERVICE_HOST"),
-              port=os.getenv("MYSQL_SERVICE_PORT"),
-              user="root",
-              passwd=os.getenv("MYSQL_DB_PASSWORD"),
-              database="randomizer",
-              auth_plugin="mysql_native_password"
-           )
         cursor = db.cursor()
-        cursor.execute("INSERT INTO MyUsers(firstName, lastName) VALUES (%s, %s)", (firstName, lastName))  
-#        cursor.execute("select word from random_words order by rand() limit 1;")
-        res = cursor.fetchall()
-#        return html.format(random_word=res[0][0], hostname=socket.gethostname())
-    return render_template('index.html')
+        cursor.execute("INSERT INTO PARADB.users (fname, lname) VALUES (%s, %s)", (firstName, lastName))
+        db.commit() 
+#        cursor.execute("select * from MyUsers;") 
+#        data = cursor.fetchall()
+    return render_template('index.html', message="Users Added!")

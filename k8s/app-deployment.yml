@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: randomizer
+  name: testapp
   labels:
     app: flask
 spec:
@@ -18,11 +18,11 @@ spec:
         app: flask
     spec:
       containers:
-      - name: randomizer
-        image: venpara/ven-hello:latest
+      - name: testapp
+        image: venpara/ven-app:latest
         imagePullPolicy: IfNotPresent
         env:
-          - name: MYSQL_DB_PASSWORD
+          - name: MYSQL_ROOT_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: mysql-password
@@ -34,7 +34,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: randomizer
+  name: testapp
   labels:
     app: flask
 spec:

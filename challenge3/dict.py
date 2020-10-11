@@ -1,3 +1,7 @@
+# For a given nested object like a = {'a': {'b': {'c': {'d': 'e'}}}}
+# this program prints the key value pair
+
+
 #!/usr/bin/python
 out = ""
 def recursive_items(dictionary):
